@@ -21,59 +21,77 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            overflow-x: hidden;
+            overflow: hidden; /* Prevent scrollbars from the background hearts */
         }
 
         .header {
             margin-top: 50px;
             color: var(--text-grey);
             font-size: 1.5rem;
+            z-index: 10; /* Keep text above background hearts */
         }
 
+        /* --- BACKGROUND AMBIENT HEARTS --- */
+        .ambient-heart {
+            position: absolute;
+            color: rgba(255, 77, 109, 0.2); /* Very subtle opacity */
+            font-size: 20px;
+            z-index: 1;
+            pointer-events: none; /* Make sure these don't block clicks */
+            animation: float-up var(--d) linear infinite;
+        }
+
+        @keyframes float-up {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.5; }
+            90% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* --- MAIN INTERACTIVE HEARTS --- */
         #heart-container {
             position: relative;
-            width: 90%;
-            max-width: 800px; /* Widened to fit more hearts in a line */
+            width: 95%; /* Wider container to fill the screen */
+            max-width: 1000px;
             height: 250px;
             margin-top: 50px;
             display: flex;
             justify-content: space-around;
             align-items: center;
+            z-index: 10;
         }
 
         .floating-heart {
             position: absolute;
             cursor: pointer;
-            font-size: 35px;
+            font-size: 40px;
             transition: transform 0.3s ease, opacity 0.3s;
             filter: drop-shadow(0 5px 15px rgba(255, 77, 109, 0.3));
         }
 
         .floating-heart.clicked {
-            opacity: 0.6;
-            filter: grayscale(0.5);
+            opacity: 0.4;
+            filter: grayscale(0.7); /* Visual cue that it was already clicked */
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-25px); }
         }
 
-        /* --- NEW CHARGING METER STYLES --- */
+        /* --- CHARGING METER --- */
         #meter-container {
-            display: none; /* Hidden until 10 hearts clicked */
-            width: 300px;
+            display: none;
+            width: 320px;
             text-align: center;
             margin-top: 20px;
-            animation: fadeIn 1s ease-in;
+            z-index: 10;
         }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .progress-bar-bg {
             width: 100%;
             height: 20px;
-            background: #eee;
+            background: rgba(255, 255, 255, 0.6);
             border-radius: 10px;
             overflow: hidden;
             border: 2px solid var(--accent-pink);
@@ -98,6 +116,7 @@
             border-radius: 50px;
             font-weight: bold;
             cursor: pointer;
+            z-index: 10;
             box-shadow: 0 10px 20px rgba(137, 148, 189, 0.3);
         }
 
@@ -168,6 +187,18 @@
         const nextBtn = document.getElementById('next-btn');
         let clickedHearts = new Set();
 
+        // 1. GENERATE BACKGROUND AMBIENT HEARTS
+        for (let i = 0; i < 25; i++) {
+            const ambient = document.createElement('div');
+            ambient.className = 'ambient-heart';
+            ambient.innerHTML = '💗';
+            ambient.style.left = Math.random() * 100 + 'vw';
+            ambient.style.setProperty('--d', (Math.random() * 8 + 5) + 's'); // Duration
+            ambient.style.animationDelay = Math.random() * 10 + 's';
+            document.body.appendChild(ambient);
+        }
+
+        // 2. GENERATE MAIN INTERACTIVE HEARTS
         memories.forEach((text, index) => {
             const heart = document.createElement('div');
             heart.className = 'floating-heart';
@@ -175,7 +206,7 @@
             
             const xPos = (index / (memories.length - 1)) * 100;
             heart.style.left = `${xPos}%`;
-            const yOffset = (index % 2 === 0) ? -30 : 30;
+            const yOffset = (index % 2 === 0) ? -40 : 40; // Slightly more offset for fullness
             heart.style.top = `calc(50% + ${yOffset}px)`;
             heart.style.animation = `float ${3 + Math.random() * 2}s ease-in-out infinite`;
             heart.style.animationDelay = `${index * 0.2}s`;
@@ -192,21 +223,16 @@
 
         function updateMeter() {
             const count = clickedHearts.size;
-            
-            // Show meter only after 10 hearts are clicked
             if (count >= 10) {
                 meterContainer.style.display = 'block';
-                
-                // Calculate percentage based on total memories
                 const percent = (count / memories.length) * 100;
                 progressFill.style.width = percent + '%';
                 
-                // Update status text
                 if (count < memories.length) {
                     document.getElementById('meter-status').innerText = `Charged: ${Math.round(percent)}%`;
                 } else {
                     document.getElementById('meter-status').innerText = "Fully Charged! ❤️";
-                    nextBtn.style.display = 'block'; // Reveal the gift button
+                    nextBtn.style.display = 'block'; 
                 }
             }
         }
