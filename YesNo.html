@@ -7,18 +7,41 @@
     <style>
         :root { --bg-pink: #fdf2f4; --card-white: #ffffff; --text-grey: #4a5568; --btn-blue: #8994bd; --accent-pink: #ffb3c1; }
         * { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23ff4d6d"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto; }
+        
         body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--bg-pink); font-family: "Maiandra GD", sans-serif; overflow: hidden; animation: fadeInPage 1.5s ease-in-out; }
         @keyframes fadeInPage { from { opacity: 0; } to { opacity: 1; } }
+        
         .container { position: relative; width: 90%; max-width: 1000px; height: 550px; background: var(--card-white); border-radius: 60px; display: flex; align-items: center; padding: 0 60px; box-shadow: 0 30px 60px rgba(255, 179, 193, 0.2); z-index: 10; }
         .text-section { flex: 1.2; }
-        h1 { font-size: 4.5rem; line-height: 0.9; color: var(--text-grey); margin: 0; text-transform: uppercase; }
-        p { color: #718096; font-size: 1.15rem; margin: 25px 0 40px 0; max-width: 420px; }
-        .circle-bg { width: 440px; height: 440px; background: var(--accent-pink); border-radius: 50%; display: flex; justify-content: center; align-items: center; position: relative; animation: float 4s ease-in-out infinite; }
+        
+        h1 { font-size: 4.5rem; line-height: 0.9; color: var(--text-grey); margin: 0; text-transform: uppercase; font-family: "Maiandra GD", sans-serif; }
+        p { color: #718096; font-size: 1.15rem; margin: 25px 0 40px 0; max-width: 420px; font-family: "Maiandra GD", sans-serif; }
+        
+        .circle-bg { width: 440px; height: 440px; background: var(--accent-pink); border-radius: 50%; display: flex; justify-content: center; align-items: center; position: relative; animation: float 4s ease-in-out infinite; z-index: 1; }
         .couple-emoji { font-size: 210px; line-height: 1; }
+        
         .btn-group { display: flex; gap: 25px; }
-        button { padding: 18px 50px; font-size: 1.3rem; border-radius: 50px; border: none; font-weight: bold; transition: 0.3s; }
-        #yes-btn { background: var(--btn-blue); color: white; }
-        #no-btn { background: white; color: var(--btn-blue); border: 2px solid var(--btn-blue); position: relative; }
+        
+        button { 
+            padding: 18px 50px; 
+            font-size: 1.3rem; 
+            border-radius: 50px; 
+            border: none; 
+            font-weight: bold; 
+            transition: 0.3s; 
+            font-family: "Maiandra GD", sans-serif; /* Fixed Font */
+        }
+        
+        #yes-btn { background: var(--btn-blue); color: white; position: relative; z-index: 5; }
+        
+        #no-btn { 
+            background: white; 
+            color: var(--btn-blue); 
+            border: 2px solid var(--btn-blue); 
+            position: relative; 
+            z-index: 9999; /* Fixed Overlay issue */
+        }
+
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
     </style>
 </head>
@@ -38,29 +61,50 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         const music = document.getElementById('bg-music');
+        const noBtn = document.getElementById('no-btn');
+        const subtext = document.getElementById('subtext');
+        let hoverCount = 0;
+
         function handleYes() {
             music.play();
             localStorage.setItem('musicPlaying', 'true');
             document.getElementById('heading').innerHTML = "I KNEW YOU'D <br><span style='color: #ff4d6d;'>SAY YES😝!</span>";
-            document.getElementById('no-btn').style.display = 'none';
+            noBtn.style.display = 'none';
             confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             setTimeout(() => { window.location.href = "Story.html"; }, 3000);
         }
-        const noBtn = document.getElementById('no-btn');
+
         noBtn.addEventListener('mouseover', () => {
+            hoverCount++;
+            
+            // Change subtext based on how many times she tries to click NO
+            if (hoverCount === 3) {
+                subtext.innerText = "Wait, what? You're actually trying to click NO? 😂";
+                subtext.style.color = "#ff4d6d";
+            } else if (hoverCount === 7) {
+                subtext.innerText = "Okay, now you're just being mean! Just click YES already! ❤️";
+            } else if (hoverCount === 12) {
+                subtext.innerText = "I can do this all day, Sabarna... 🏃‍♂️💨";
+            }
+
             noBtn.style.position = 'fixed';
-            noBtn.style.left = Math.random() * (window.innerWidth - 100) + 'px';
-            noBtn.style.top = Math.random() * (window.innerHeight - 50) + 'px';
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            noBtn.style.left = x + 'px';
+            noBtn.style.top = y + 'px';
         });
+
+        // Sparkle effect
         document.addEventListener('mousemove', (e) => {
             const s = document.createElement('div'); s.innerHTML = '✨'; s.style.position = 'fixed';
             s.style.left = e.clientX + 'px'; s.style.top = e.clientY + 'px'; s.style.pointerEvents = 'none';
+            s.style.zIndex = '10000';
             document.body.appendChild(s);
             setTimeout(() => { s.style.transition = '0.8s'; s.style.opacity = '0'; s.style.transform = 'translateY(10px)'; }, 10);
             setTimeout(() => s.remove(), 800);
         });
     </script>
 </body>
-
 </html>
+
 
