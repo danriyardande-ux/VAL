@@ -5,105 +5,172 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Our Story</title>
     <style>
-        :root { --bg-pink: #fdf2f4; --text-grey: #4a5568; --btn-blue: #8994bd; --love-red: #ff4d6d; }
-        * { cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23ff4d6d"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'), auto; }
-        
-        body { 
+        :root {
+            --bg-pink: #fdf2f4;
+            --text-grey: #4a5568;
+            --btn-blue: #8994bd;
+            --accent-pink: #ffb3c1;
+            --love-red: #ff4d6d;
+        }
+
+        body {
             margin: 0;
             background: linear-gradient(135deg, #fdf2f4 0%, #fae1e6 100%);
-            font-family: "Maiandra GD", sans-serif; 
-            text-align: center; 
-            overflow-x: hidden; 
-            animation: fadeInPage 1.5s ease-in-out;
+            font-family: "Maiandra GD", sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Romantic Floating Petals Background */
-        .petal {
-            position: fixed; background: rgba(255, 182, 193, 0.4);
-            border-radius: 50% 0 50% 50%; z-index: -1;
-            animation: petal-drift 10s linear infinite;
-        }
-        @keyframes petal-drift {
-            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        .header {
+            margin-top: 50px;
+            color: var(--text-grey);
+            font-size: 1.5rem;
         }
 
-        @keyframes fadeInPage { from { opacity: 0; } to { opacity: 1; } }
-        
-        #canvas { position: relative; width: 100%; height: 400px; margin-top: 20px; z-index: 1; }
-        .floating-heart { position: absolute; padding: 25px; animation: float 5s ease-in-out infinite; }
-        .heart-icon { font-size: 60px; filter: drop-shadow(0 5px 15px rgba(255,77,109,0.3)); }
-        
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
-        
-        #message-box { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: white; padding: 40px; border-radius: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); z-index: 1000; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); width: 80%; max-width: 350px; border: 2px solid #ffb3c1; }
-        #message-box.active { transform: translate(-50%, -50%) scale(1); }
+        /* Container for the hearts */
+        #heart-container {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            height: 300px;
+            margin-top: 50px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
 
-        #meter-section { display: none; background: white; padding: 30px; border-radius: 40px; width: 300px; margin: 20px auto; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-        .progress-bar { width: 100%; height: 20px; background: #eee; border-radius: 10px; overflow: hidden; margin: 15px 0; }
-        #meter-fill { width: 0%; height: 100%; background: var(--love-red); transition: width 0.3s; }
-        #charge-btn { background: var(--love-red); color: white; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; }
-        #final-btn { display: none; background: var(--btn-blue); color: white; padding: 15px 40px; border-radius: 50px; text-decoration: none; font-weight: bold; margin-top: 20px; }
+        .floating-heart {
+            position: absolute;
+            cursor: pointer;
+            font-size: 45px;
+            transition: transform 0.3s ease;
+            filter: drop-shadow(0 5px 15px rgba(255, 77, 109, 0.3));
+        }
+
+        /* The floating animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .floating-heart:hover {
+            transform: scale(1.2);
+        }
+
+        #message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: 0.3s;
+            border: 2px solid var(--accent-pink);
+            width: 280px;
+            text-align: center;
+        }
+
+        #message-box.active {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        #next-btn {
+            display: none;
+            margin-top: 30px;
+            padding: 15px 35px;
+            background: var(--btn-blue);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(137, 148, 189, 0.3);
+        }
     </style>
 </head>
 <body>
-    <audio id="bg-music" loop><source src="https://youtu.be/bc8yVRyIhjk?list=RDbc8yVRyIhjk" type="audio/mpeg"></audio>
-    
-    <h2 style="color: var(--text-grey); text-shadow: 0 2px 4px rgba(0,0,0,0.05);">A few things I've loved in YOU...</h2>
-    
-    <div id="canvas"></div>
-    
-    <div id="meter-section">
-        <h3>Charge my Heart to reveal Gift!❤️</h3>
-        <div class="progress-bar"><div id="meter-fill"></div></div>
-        <button id="charge-btn" onclick="chargeMeter()">CLICK TO FILL</button>
-    </div>
-    
-    <a href="Final.html" id="final-btn" style="display: none; margin: 20px auto; width: 180px;">COLLECT GIFT HERE🎁</a>
-    
+
+    <h2 class="header">A few things I love about YOU...</h2>
+
+    <div id="heart-container"></div>
+
+    <button id="next-btn" onclick="window.location.href='Final.html'">SEE MY GIFT 🎁</button>
+
     <div id="message-box">
-        <p id="message-text" style="color: var(--text-grey); font-size: 1.1rem; line-height: 1.6;"></p>
-        <button onclick="closeMessage()" style="background:var(--btn-blue); color:white; border:none; padding:10px 20px; border-radius:20px;">Close</button>
+        <p id="message-text" style="color: var(--text-grey); line-height: 1.6;"></p>
+        <button onclick="closeMessage()" style="background: var(--love-red); color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer;">Close</button>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
-        // Create petals
-        for(let i=0; i<15; i++) {
-            let p = document.createElement('div'); p.className = 'petal';
-            p.style.left = Math.random() * 100 + 'vw';
-            p.style.width = p.style.height = Math.random() * 15 + 5 + 'px';
-            p.style.animationDelay = Math.random() * 10 + 's';
-            document.body.appendChild(p);
+        const memories = [
+            "That specific comfort of your presence",
+            "Obviously your CURLY hairs...oh my gawd!",
+            "Your resilience in everything you do",
+            "How your EYES light-up when you're excited",
+            "How you've become my safe place",
+            "Your classy-ness",
+            "Every tiny habit that makes you, YOU.",
+            "Tat POTTU",
+            "You Traditional but Modern Look",
+            "YOUR Attitude",
+            "Your Fingers with Rings (The icing on the cake)",
+            "Your Support & Care",
+            "Dressing Sense",
+            "Your Way of Narration",
+            "Open-ness",
+            "Remembering Little Things",
+            "Your Maturity & Understanding",
+        ];
+
+        const container = document.getElementById('heart-container');
+        let clickedHearts = new Set();
+
+        memories.forEach((text, index) => {
+            const heart = document.createElement('div');
+            heart.className = 'floating-heart';
+            heart.innerHTML = '💖';
+            
+            // 1. Organize in a line (Percentage of width)
+            const xPos = (index / (memories.length - 1)) * 100;
+            heart.style.left = `${xPos}%`;
+
+            // 2. Up or Down offset on Y-axis
+            const yOffset = (index % 2 === 0) ? -30 : 30;
+            heart.style.top = `calc(50% + ${yOffset}px)`;
+
+            // 3. Persist individual floating effect with unique timing
+            heart.style.animation = `float ${3 + Math.random() * 2}s ease-in-out infinite`;
+            heart.style.animationDelay = `${index * 0.5}s`;
+
+            heart.onclick = () => {
+                showMessage(text);
+                clickedHearts.add(index);
+                if (clickedHearts.size >= 3) { // Show button after 3 hearts are clicked
+                    document.getElementById('next-btn').style.display = 'block';
+                }
+            };
+
+            container.appendChild(heart);
+        });
+
+        function showMessage(text) {
+            document.getElementById('message-text').innerText = text;
+            document.getElementById('message-box').classList.add('active');
         }
 
-        const music = document.getElementById('bg-music');
-        const memories = ["How your EYES light-up when you're excited", "Your classy-ness", "Obviously your CURLY hairs...oh my gawd!", "Tat POTTU", "YOUR Attitude", "Your Understanding", "Your Fingers with Rings (The icing on the cake)", "Your Resilience","Your Support & Care","Dressing Sense", "You Traditional but Modern Look", "Your Maturity", "Remembering Little Things", "Your Way of Narration", "Open-ness"];
-        let clicked = 0, charge = 0;
-
-        memories.forEach((m, i) => {
-            const h = document.createElement('div'); h.className = 'floating-heart';
-            h.style.left = (10 + Math.random() * 70) + '%'; h.style.top = Math.random() * 300 + 'px';
-            h.innerHTML = `<span class="heart-icon">${i % 2 === 0 ? '💗' : '💖'}</span>`;
-            h.onclick = () => { document.getElementById('message-text').innerText = m; document.getElementById('message-box').classList.add('active'); music.play(); };
-            document.getElementById('canvas').appendChild(h);
-        });
-
-        function closeMessage() { document.getElementById('message-box').classList.remove('active'); clicked++; if(clicked >= 10) document.getElementById('meter-section').style.display = 'block'; }
-        function chargeMeter() { charge += 20; document.getElementById('meter-fill').style.width = charge + '%'; if(charge >= 100) { document.getElementById('charge-btn').style.display='none'; document.getElementById('final-btn').style.display='block'; confetti({particleCount:100}); } }
-        
-        window.addEventListener('load', () => { 
-            const time = localStorage.getItem('musicTime');
-            if(localStorage.getItem('musicPlaying') === 'true') { if(time) music.currentTime = parseFloat(time); music.play().catch(() => {}); }
-        });
-        setInterval(() => { if(!music.paused) localStorage.setItem('musicTime', music.currentTime); }, 100);
+        function closeMessage() {
+            document.getElementById('message-box').classList.remove('active');
+        }
     </script>
 </body>
-
 </html>
+
 
 
 
