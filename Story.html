@@ -52,17 +52,17 @@
 <body>
     <audio id="bg-music" loop><source src="https://youtu.be/bc8yVRyIhjk?list=RDbc8yVRyIhjk" type="audio/mpeg"></audio>
     
-    <h2 style="color: var(--text-grey); text-shadow: 0 2px 4px rgba(0,0,0,0.05);">A few things I've loved...</h2>
+    <h2 style="color: var(--text-grey); text-shadow: 0 2px 4px rgba(0,0,0,0.05);">A few things I've loved in YOU...</h2>
     
     <div id="canvas"></div>
     
     <div id="meter-section">
-        <h3>Charge my Heart! ❤️</h3>
+        <h3>Charge my Heart to reveal Gift! ❤️</h3>
         <div class="progress-bar"><div id="meter-fill"></div></div>
         <button id="charge-btn" onclick="chargeMeter()">CLICK TO FILL</button>
     </div>
     
-    <a href="Final.html" id="final-btn" style="display: none; margin: 20px auto; width: 180px;">SEE MY GIFT 🎁</a>
+    <a href="Final.html" id="final-btn" style="display: none; margin: 20px auto; width: 180px;">COLLECT GIFT HERE🎁</a>
     
     <div id="message-box">
         <p id="message-text" style="color: var(--text-grey); font-size: 1.1rem; line-height: 1.6;"></p>
@@ -92,7 +92,7 @@
             document.getElementById('canvas').appendChild(h);
         });
 
-        function closeMessage() { document.getElementById('message-box').classList.remove('active'); clicked++; if(clicked >= 3) document.getElementById('meter-section').style.display = 'block'; }
+        function closeMessage() { document.getElementById('message-box').classList.remove('active'); clicked++; if(clicked >= 6) document.getElementById('meter-section').style.display = 'block'; }
         function chargeMeter() { charge += 20; document.getElementById('meter-fill').style.width = charge + '%'; if(charge >= 100) { document.getElementById('charge-btn').style.display='none'; document.getElementById('final-btn').style.display='block'; confetti({particleCount:100}); } }
         
         window.addEventListener('load', () => { 
@@ -104,5 +104,6 @@
 </body>
 
 </html>
+
 
 
