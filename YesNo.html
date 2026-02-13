@@ -20,7 +20,7 @@
         .circle-bg { width: 440px; height: 440px; background: var(--accent-pink); border-radius: 50%; display: flex; justify-content: center; align-items: center; position: relative; animation: float 4s ease-in-out infinite; z-index: 1; }
         .couple-emoji { font-size: 210px; line-height: 1; }
         
-        .btn-group { display: flex; gap: 25px; align-items: center; }
+        .btn-group { display: flex; gap: 25px; }
         
         button { 
             padding: 18px 50px; 
@@ -28,7 +28,7 @@
             border-radius: 50px; 
             border: none; 
             font-weight: bold; 
-            transition: all 0.3s ease; 
+            transition: 0.3s; 
             font-family: "Maiandra GD", sans-serif;
         }
         
@@ -39,7 +39,7 @@
             color: var(--btn-blue); 
             border: 2px solid var(--btn-blue); 
             position: relative; 
-            z-index: 9999; /* Higher z-index to stay on top of images */
+            z-index: 9999;
         }
 
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
@@ -62,10 +62,8 @@
     <script>
         const music = document.getElementById('bg-music');
         const noBtn = document.getElementById('no-btn');
-        const yesBtn = document.getElementById('yes-btn');
         const subtext = document.getElementById('subtext');
         let hoverCount = 0;
-        let yesScale = 1;
 
         function handleYes() {
             music.play();
@@ -79,7 +77,6 @@
         noBtn.addEventListener('mouseover', () => {
             hoverCount++;
             
-            // 1. Tease Messages
             if (hoverCount === 3) {
                 subtext.innerText = "Wait, what? NO click panna try panriya? 😂";
                 subtext.style.color = "#ff4d6d";
@@ -89,11 +86,6 @@
                 subtext.innerText = "I can do this all day, Sabarna... 🏃‍♂️💨";
             }
 
-            // 2. Make YES button bigger
-            yesScale += 0.15;
-            yesBtn.style.transform = `scale(${yesScale})`;
-
-            // 3. Move NO button (Stay on top with z-index)
             noBtn.style.position = 'fixed';
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
@@ -101,7 +93,6 @@
             noBtn.style.top = y + 'px';
         });
 
-        // Sparkle effect
         document.addEventListener('mousemove', (e) => {
             const s = document.createElement('div'); s.innerHTML = '✨'; s.style.position = 'fixed';
             s.style.left = e.clientX + 'px'; s.style.top = e.clientY + 'px'; s.style.pointerEvents = 'none';
@@ -113,6 +104,7 @@
     </script>
 </body>
 </html>
+
 
 
 
