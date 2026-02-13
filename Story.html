@@ -19,42 +19,42 @@
             font-family: "Maiandra GD", sans-serif;
             display: flex;
             flex-direction: column;
+            justify-content: center; /* Centering everything vertically */
             align-items: center;
-            min-height: 100vh;
-            overflow: hidden; /* Prevent scrollbars from the background hearts */
+            height: 100vh;
+            overflow: hidden;
         }
 
         .header {
-            margin-top: 50px;
+            position: absolute;
+            top: 50px;
             color: var(--text-grey);
-            font-size: 1.5rem;
-            z-index: 10; /* Keep text above background hearts */
+            font-size: 1.8rem;
+            z-index: 10;
         }
 
-        /* --- BACKGROUND AMBIENT HEARTS --- */
+        /* --- BACKGROUND FILLER --- */
         .ambient-heart {
             position: absolute;
-            color: rgba(255, 77, 109, 0.2); /* Very subtle opacity */
-            font-size: 20px;
+            color: rgba(255, 77, 109, 0.15);
+            font-size: 25px;
             z-index: 1;
-            pointer-events: none; /* Make sure these don't block clicks */
+            pointer-events: none;
             animation: float-up var(--d) linear infinite;
         }
 
         @keyframes float-up {
             0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.5; }
-            90% { opacity: 0.5; }
+            50% { opacity: 0.4; }
             100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
 
-        /* --- MAIN INTERACTIVE HEARTS --- */
+        /* --- CENTERED HEART GRID --- */
         #heart-container {
             position: relative;
-            width: 95%; /* Wider container to fill the screen */
-            max-width: 1000px;
-            height: 250px;
-            margin-top: 50px;
+            width: 90vw;
+            max-width: 1100px;
+            height: 400px; /* Increased height for better spread */
             display: flex;
             justify-content: space-around;
             align-items: center;
@@ -64,35 +64,50 @@
         .floating-heart {
             position: absolute;
             cursor: pointer;
-            font-size: 40px;
-            transition: transform 0.3s ease, opacity 0.3s;
-            filter: drop-shadow(0 5px 15px rgba(255, 77, 109, 0.3));
+            font-size: 60px; /* Much larger hearts */
+            transition: transform 0.3s ease, opacity 0.3s, filter 0.3s;
+            filter: drop-shadow(0 10px 20px rgba(255, 77, 109, 0.4));
+        }
+
+        .floating-heart:hover {
+            transform: scale(1.2) !important;
         }
 
         .floating-heart.clicked {
-            opacity: 0.4;
-            filter: grayscale(0.7); /* Visual cue that it was already clicked */
+            opacity: 0.3;
+            filter: grayscale(1) blur(1px);
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-25px); }
+            50% { transform: translateY(-40px); } /* Higher bounce */
         }
 
-        /* --- CHARGING METER --- */
+        /* --- UI ELEMENTS --- */
+        #ui-wrapper {
+            position: absolute;
+            bottom: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 20;
+        }
+
         #meter-container {
             display: none;
-            width: 320px;
+            width: 350px;
             text-align: center;
-            margin-top: 20px;
-            z-index: 10;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 15px;
+            border-radius: 25px;
+            backdrop-filter: blur(5px);
         }
 
         .progress-bar-bg {
             width: 100%;
-            height: 20px;
-            background: rgba(255, 255, 255, 0.6);
-            border-radius: 10px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 12px;
             overflow: hidden;
             border: 2px solid var(--accent-pink);
             margin-top: 10px;
@@ -103,21 +118,20 @@
             height: 100%;
             background: var(--love-red);
             transition: width 0.5s ease;
-            box-shadow: 0 0 10px var(--love-red);
         }
 
         #next-btn {
             display: none;
-            margin-top: 30px;
-            padding: 15px 35px;
+            margin-top: 20px;
+            padding: 18px 45px;
             background: var(--btn-blue);
             color: white;
             border: none;
             border-radius: 50px;
             font-weight: bold;
+            font-size: 1.2rem;
             cursor: pointer;
-            z-index: 10;
-            box-shadow: 0 10px 20px rgba(137, 148, 189, 0.3);
+            box-shadow: 0 10px 25px rgba(137, 148, 189, 0.4);
         }
 
         #message-box {
@@ -126,13 +140,12 @@
             left: 50%;
             transform: translate(-50%, -50%) scale(0);
             background: white;
-            padding: 30px;
-            border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+            padding: 35px;
+            border-radius: 40px;
             z-index: 1000;
             transition: 0.3s;
-            border: 2px solid var(--accent-pink);
-            width: 280px;
+            border: 3px solid var(--accent-pink);
+            width: 300px;
             text-align: center;
         }
 
@@ -145,60 +158,48 @@
 
     <div id="heart-container"></div>
 
-    <div id="meter-container">
-        <p style="color: var(--text-grey); margin-bottom: 5px;">Heart Charging... ❤️</p>
-        <div class="progress-bar-bg">
-            <div id="progress-fill" class="progress-fill"></div>
+    <div id="ui-wrapper">
+        <div id="meter-container">
+            <p style="color: var(--text-grey); margin: 0; font-weight: bold;">Heart Charging... ❤️</p>
+            <div class="progress-bar-bg">
+                <div id="progress-fill" class="progress-fill"></div>
+            </div>
+            <p id="meter-status" style="font-size: 0.9rem; color: var(--love-red); margin-top: 5px;">Click the hearts!</p>
         </div>
-        <p id="meter-status" style="font-size: 0.8rem; color: var(--love-red); margin-top: 5px;">Open more hearts!</p>
+        <button id="next-btn" onclick="window.location.href='Final.html'">A SMALL GIFT FOR YOU 🎁</button>
     </div>
 
-    <button id="next-btn" onclick="window.location.href='Final.html'">A SMALL GIFT FOR YOU 🎁</button>
-
     <div id="message-box">
-        <p id="message-text" style="color: var(--text-grey); line-height: 1.6;"></p>
-        <button onclick="closeMessage()" style="background: var(--love-red); color: white; border: none; padding: 8px 20px; border-radius: 20px; cursor: pointer;">Close</button>
+        <p id="message-text" style="color: var(--text-grey); font-size: 1.1rem; line-height: 1.6;"></p>
+        <button onclick="closeMessage()" style="background: var(--love-red); color: white; border: none; padding: 10px 25px; border-radius: 25px; cursor: pointer; margin-top: 15px;">Close</button>
     </div>
 
     <script>
         const memories = [
-            "That specific comfort of your presence",
-            "Obviously your CURLY hairs...oh my gawd!",
-            "Your resilience in everything you do",
-            "How your EYES light-up when you're excited",
-            "How you've become my safe place",
-            "Your classy-ness",
-            "Every tiny habit that makes you, YOU.",
-            "Tat POTTU",
-            "You Traditional but Modern Look",
-            "YOUR Attitude",
-            "Your Fingers with Rings (The icing on the cake)",
-            "Your Support & Care",
-            "Dressing Sense",
-            "Your Way of Narration",
-            "Open-ness",
-            "Remembering Little Things",
-            "Your Maturity & Understanding",
+            "That specific comfort of your presence", "Obviously your CURLY hairs...", "Your resilience", 
+            "Your EYES", "My safe place", "Your classy-ness", "Every tiny habit", "Tat POTTU", 
+            "Traditional but Modern", "YOUR Attitude", "Rings on fingers", "Support & Care", 
+            "Dressing Sense", "Way of Narration", "Open-ness", "Little Things", "Maturity"
         ];
 
         const container = document.getElementById('heart-container');
-        const meterContainer = document.getElementById('meter-container');
         const progressFill = document.getElementById('progress-fill');
+        const meterContainer = document.getElementById('meter-container');
         const nextBtn = document.getElementById('next-btn');
         let clickedHearts = new Set();
 
-        // 1. GENERATE BACKGROUND AMBIENT HEARTS
-        for (let i = 0; i < 25; i++) {
+        // 1. Fill background with more ambient particles
+        for (let i = 0; i < 40; i++) {
             const ambient = document.createElement('div');
             ambient.className = 'ambient-heart';
-            ambient.innerHTML = '💗';
+            ambient.innerHTML = Math.random() > 0.5 ? '💗' : '✨';
             ambient.style.left = Math.random() * 100 + 'vw';
-            ambient.style.setProperty('--d', (Math.random() * 8 + 5) + 's'); // Duration
-            ambient.style.animationDelay = Math.random() * 10 + 's';
+            ambient.style.setProperty('--d', (Math.random() * 7 + 4) + 's');
+            ambient.style.animationDelay = (Math.random() * 10) + 's';
             document.body.appendChild(ambient);
         }
 
-        // 2. GENERATE MAIN INTERACTIVE HEARTS
+        // 2. Main Hearts - Centered and Larger
         memories.forEach((text, index) => {
             const heart = document.createElement('div');
             heart.className = 'floating-heart';
@@ -206,10 +207,13 @@
             
             const xPos = (index / (memories.length - 1)) * 100;
             heart.style.left = `${xPos}%`;
-            const yOffset = (index % 2 === 0) ? -40 : 40; // Slightly more offset for fullness
+            
+            // Randomize Y-axis more to fill the center area
+            const yOffset = (index % 2 === 0) ? (Math.random() * -120 - 30) : (Math.random() * 120 + 30);
             heart.style.top = `calc(50% + ${yOffset}px)`;
-            heart.style.animation = `float ${3 + Math.random() * 2}s ease-in-out infinite`;
-            heart.style.animationDelay = `${index * 0.2}s`;
+            
+            heart.style.animation = `float ${2.5 + Math.random() * 2}s ease-in-out infinite`;
+            heart.style.animationDelay = `${index * 0.15}s`;
 
             heart.onclick = () => {
                 showMessage(text);
@@ -217,22 +221,19 @@
                 heart.classList.add('clicked');
                 updateMeter();
             };
-
             container.appendChild(heart);
         });
 
         function updateMeter() {
             const count = clickedHearts.size;
-            if (count >= 10) {
+            if (count >= 5) {
                 meterContainer.style.display = 'block';
                 const percent = (count / memories.length) * 100;
                 progressFill.style.width = percent + '%';
-                
-                if (count < memories.length) {
-                    document.getElementById('meter-status').innerText = `Charged: ${Math.round(percent)}%`;
-                } else {
+                document.getElementById('meter-status').innerText = `Charged: ${Math.round(percent)}%`;
+                if (count === memories.length) {
                     document.getElementById('meter-status').innerText = "Fully Charged! ❤️";
-                    nextBtn.style.display = 'block'; 
+                    nextBtn.style.display = 'block';
                 }
             }
         }
@@ -248,6 +249,7 @@
     </script>
 </body>
 </html>
+
 
 
 
